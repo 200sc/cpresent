@@ -1,0 +1,160 @@
+C and Go
+2 May 2018
+
+Patrick Stephen
+Software Engineer, Contractor (currently at SpringboardVR)
+patrick.d.stephen@gmail.com
+
+* Topics
+
+- History
+- Code Style
+- Performance
+- Concurrency
+- C and Go interop
+- Emulating C from Go
+- Tooling
+- Stdlib
+
+* History
+
+* History of Go
+
+: So I won't go into the history of C here, because presumably
+: we're at least a little familar with it, but I will provide a little timeline
+: of Go.
+
+- Prototyping began in 2009, led by Rob Pike, Ken Thompson, and Robert Griesemer.
+- 1.0 released in 2012
+- "2.0" announced to be in talks in 2017
+- 1.10 (most recent version) released in February, 2018
+.image hiking.png _ 300
+.caption _Gopher_ by [[https://www.instagram.com/reneefrench/][Renée French]]
+.caption art by egonelbre
+
+: 2.0's announcment was more of a call for ideas of what to add to Go for 
+: a potential 2.0 release-- different people in charge of Go have said 
+: things referring to the absence of polymorphic parameterization (generics)
+: in Go and how 2.0 would change that; others have said "2.0" might not contain
+: any breaking changes and might just be 1.15 or whatever. 
+
+* History of Go (cont.)
+
+- Largely inspired by dissatisfaction with C++ and Java
+- Broadly designed as Oberon structured code with C tokens.
+- Focus on concurrency and productivity through readability
+
+* Code Style
+
+* Code Style 
+
+Go and C have a lot of commonalities in code style. Almost all of Go's tokens
+are also C tokens, and those that aren't are almost all concurrency-related.
+
+.code hello.c
+.caption Hello World in C
+.code hello.go
+.caption Hello World in Go
+
+
+* Code Style (cont.)
+
+Some differences from C:
+
+- No need for semicolons (But they are allowed)
+- Brace positioning (enforced by *gofmt*)
+- Fewer parentheses in conditionals, loops
+.code paren.c
+.code paren.go
+- Function pointer syntax
+.code fp.c
+.code fp.go
+
+
+* Code Style (cont.)
+
+Missing things:
+- No type qualifiers
+- No multi-word types (*uint* instead of *unsigned* *int*)
+- No compound, statement expressions
+
+New things:
+- Concurrency primitives: *go*, *chan*, *select*
+- *fallthrough* in switch statements
+- *package* statements for each file
+
+* Performance
+
+* Performance In Theory
+
+.image perf.png
+.caption Credit Keval Patel
+
+* Performance In Practice
+
+Go obviously isn't going to beat out C in terms of performance, or even Java in
+some cases just as a result of the age of the Go compiler. 
+
+Selected benchmarks from [[https://benchmarksgame-team.pages.debian.net/benchmarksgame/][benchmarksgame]]:
+
+Generating digits of Pi:
+- C (gcc) *1.74* secs
+- Go *2.02* secs
+
+Generate DNA sequences:
+- C (gcc) *1.32* secs
+- Go *2.08* secs
+
+* Performance In Practice (cont.)
+
+Count nucleotides:
+- C (gcc) *6.67* secs
+- Go *12.77* secs
+
+Model the orbits of Jovian planets:
+- C (gcc) *9.12* secs
+- Go *21.37* secs
+
+Plot the Mandelbrot set [-1.5-i,0.5+i] as a bitmap:
+- C (gcc) *1.64* secs
+- Go *5.48* secs
+
+Perform work with binary trees:
+- C (gcc) *2.44* secs
+- Go *28.80* secs
+
+* Concurrency
+
+* Concurrency 
+
+Approaches in C:
+- POSIX Threads
+- Cilk
+- (C++) Halide
+- ...
+
+In Go: 
+- Built in types and operations
+
+* Concurrency 2
+* Concurrency 3
+* Concurrency 4
+* C-Go Interop 1
+* C-Go Interop 2
+* Emulating C (unsafe) 1
+* Unsafe 2
+* Unsafe 3
+* Embedding Go 1
+* Embedding Go 2
+* Tooling 1
+* Tooling 2
+* Tooling 3
+* Stdlib, 1
+* Stdlib, 2
+* Stdlib, 3
+* Pros/Cons 1
+* Pros/Cons 2
+* Conclusion
+* Other Talks
+Robert Grisemer gave a talk on almost this exact premise in 2012:
+.link https://talks.golang.org/2012/goforc.slide
