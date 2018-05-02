@@ -12,9 +12,7 @@ patrick.d.stephen@gmail.com
 - Performance
 - Concurrency
 - C and Go interop
-- Emulating C from Go
-- Tooling
-- Stdlib
+- Odds and Ends
 
 * History
 
@@ -26,6 +24,7 @@ patrick.d.stephen@gmail.com
 
 - Prototyping began in 2009, led by Rob Pike, Ken Thompson, and Robert Griesemer.
 - 1.0 released in 2012
+- Go rewritten entirely in Go in 2015 (was written in C) 
 - "2.0" announced to be in talks in 2017
 - 1.10 (most recent version) released in February, 2018
 .image hiking.png _ 300
@@ -74,11 +73,13 @@ Some differences from C:
 * Code Style (cont.)
 
 Missing things:
+
 - No type qualifiers
 - No multi-word types (*uint* instead of *unsigned* *int*)
 - No compound, statement expressions
 
 New things:
+
 - Concurrency primitives: *go*, *chan*, *select*
 - *fallthrough* in switch statements
 - *package* statements for each file
@@ -128,33 +129,148 @@ Perform work with binary trees:
 * Concurrency 
 
 Approaches in C:
+
 - POSIX Threads
 - Cilk
 - (C++) Halide
 - ...
 
 In Go: 
+
 - Built in types and operations
 
-* Concurrency 2
-* Concurrency 3
-* Concurrency 4
-* C-Go Interop 1
-* C-Go Interop 2
-* Emulating C (unsafe) 1
-* Unsafe 2
-* Unsafe 3
-* Embedding Go 1
-* Embedding Go 2
-* Tooling 1
-* Tooling 2
-* Tooling 3
-* Stdlib, 1
-* Stdlib, 2
-* Stdlib, 3
-* Pros/Cons 1
-* Pros/Cons 2
-* Conclusion
-* Other Talks
+* Goroutines
+
+- The *go* keyword takes any function and spawns *goroutines* to handle them.
+- Goroutines are managed by a scheduler.
+- They can be scheduled in parallel or not, depending on the system.
+- Network operations, file system IO and *channel* operations yield to the scheduler
+
+* Channels
+
+- *channels* act as a thread-safe way for goroutines to share data. 
+- One can send data to a channel or recieve from a channel
+- Using channels blocks if nothing is waiting to be sent or recieved 
+- The *select* operation will pull from the earliest non-blocking channel send or recieve. 
+
+* Concurrency In Practice
+
+.code prime.go /^func Generate/,/^}/
+.code prime.go /^func Filter/,/^}/
+
+* Concurrency In Practice
+
+.play prime.go /^func main/,/^}/
+
+* C-Go Interop
+* Calling C from Go
+
+: The examples here are taken from a Go blog post on C-Go interop.
+
+.code rand.go
+
+
+* Calling C from Go (cont.) 
+
+- Flags like _CFLAGS_, _CPPFLAGS_, and _LDFLAGS_ can be defined in comments:
+.code cgocomment.go
+- *C.malloc* cannot return nil, and will crash the program instead if it would.
+- Several picky restrictions on passing and returning pointers between C and Go
+
+* Calling Go from C
+
+This Go code:
+
+.code cgoexport.go
+
+And this build command: 
+
+.code cgobuild.go
+
+Results in:
+
+.code cgoexport.c
+
+: Important to note about this code is that the resulting .so file will likely
+: exceed a couple of megabytes-- it contains the entirety of Go's runtime. 
+
+* Odds and Ends
+* Tooling 
+
+Go comes with dozens of helpful tools to reduce the need for IDEs and to keep 
+Go users using similar practices and code formatting:
+
+- *go* *fmt* for formatting
+- *go* *get* for pulling in packages
+- *go* *run/build/install* for running/building/installing code
+- *go* *test* for testing and benchmarks
+- *go* *vet* for checking for problematic code
+- *go* *tool* *<tool>* for other extensions 
+ 
+* Stdlib: Networking
+
+The *net* package:
+
+- UDP / TCP / IP primitives
+- Network interface iteration, multicasting
+- Network lookup, direct DNS lookup
+
+* Stdlib: HTTP
+
+The *net/http* package:
+
+- Handle incoming http requests through Go functions 
+- Serve files and offer file directories
+- Directly execute http requests 
+
+* Stdlib: Encoding
+
+The *encoding/json* package:
+
+- Load JSON files directly into Go struct types
+- Write Go structs out as JSON data 
+- Define explicit encodings for your own types 
+
+* Pros/Cons
+
+C Cons
+
+- Functional Programming is Difficult
+- No Generics
+- Hard to Parse Errors
+- Less Type Safety
+
+Go Cons
+
+- Functional Programming is Limited
+- No Generics
+- Garbage Collection is Slow
+- No Pointer Arithmetic (should you want it)
+
+* Pros/Cons
+
+C Pros
+
+- Performance
+- Complete Memory Control
+- Smaller Binaries
+- Elegant
+
+Go Pros
+
+- Garbage Collection is Easy 
+- Large Standard Library
+- Convenient Tooling
+- Built-in Concurrency
+- Elegant
+
+
+* Other Links
 Robert Grisemer gave a talk on almost this exact premise in 2012:
 .link https://talks.golang.org/2012/goforc.slide
+
+There's a maintained page by the Go developers on Go vs C++:
+.link https://github.com/golang/go/wiki/GoForCPPProgrammers
+
+This presentation can be found at:
+.link https://github.com/200sc/cpresent

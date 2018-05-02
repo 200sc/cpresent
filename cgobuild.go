@@ -1,0 +1,1 @@
+go build -o myCode.so -buildmode=c-shared myCode.go
